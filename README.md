@@ -130,8 +130,6 @@ VALUES (
 
 ### 🔒 Bảo mật
 - ✅ Password được mã hóa bằng **BCrypt**
-- ✅ Phân quyền với **Spring Security**
-- ✅ CSRF protection
 - ✅ Session management
 
 ### 📸 Quản lý File
@@ -174,7 +172,6 @@ VALUES (
 
 - **Backend:** Spring Boot 3.5.8
 - **Template Engine:** Thymeleaf
-- **Security:** Spring Security 6
 - **Database:** SQL Server
 - **ORM:** JPA Hibernate
 - **Build Tool:** Maven
