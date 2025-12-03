@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/admin}">
+<head><title>Quản Lý Videos</title></head>
+<body>
+<h4 layout:fragment="page-title">Quản Lý Videos</h4>
+<div layout:fragment="content">
+    <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${message}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <div class="action-bar">
+        <form th:action="@{/admin/videos}" method="get" class="search-form">
+            <div class="search-input-group">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" name="search" th:value="${search}" class="search-input" placeholder="Tìm kiếm video..." />
+                <button type="submit" class="btn-search">Tìm kiếm</button>
+                <a th:href="@{/admin/videos}" class="btn-reset">
+                    <i class="fas fa-redo"></i>
+                </a>
+            </div>
+        </form>
+        <a th:href="@{/admin/videos/add}" class="btn-add">
+            <i class="fas fa-plus me-2"></i>Thêm Video Mới
+        </a>
+    </div>
+    
+    <div class="table-container">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tiêu Đề</th>
+                    <th>Poster</th>
+                    <th>Lượt Xem</th>
+                    <th>Mô Tả</th>
+                    <th>Trạng Thái</th>
+                    <th>Danh Mục</th>
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="video : ${videos}">
+                    <td>
+                        <span class="id-badge" th:text="${video.videold}"></span>
+                    </td>
+                    <td>
+                        <span class="video-title" th:text="${video.title}"></span>
+                    </td>
+                    <td>
+                        <img th:if="${video.poster != null and !video.poster.isEmpty()}" 
+                             th:src="${video.poster.startsWith('http') ? video.poster : '/uploads/' + video.poster}" 
+                             alt="Poster" 
+                             class="video-poster" />
+                        <div th:unless="${video.poster != null and !video.poster.isEmpty()}" class="poster-placeholder">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="views-badge">
+                            <i class="fas fa-eye me-1"></i>
+                            <span th:text="${video.views}">0</span>
+                        </span>
+                    </td>
+                    <td>
+                        <span class="description-text" th:text="${#strings.abbreviate(video.description, 50)}"></span>
+                    </td>
+                    <td>
+                        <span th:if="${video.active}" class="badge badge-active">
+                            <i class="fas fa-check-circle me-1"></i>Active
+                        </span>
+                        <span th:unless="${video.active}" class="badge badge-inactive">
+                            <i class="fas fa-times-circle me-1"></i>Inactive
+                        </span>
+                    </td>
+                    <td>
+                        <span class="category-badge" th:text="${video.category != null ? video.category.categoryname : 'N/A'}"></span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a th:href="@{/admin/videos/edit/{id}(id=${video.videold})}" class="btn-action btn-edit" title="Chỉnh sửa">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a th:href="@{/admin/videos/delete/{id}(id=${video.videold})}" 
+                               class="btn-action btn-delete delete-link" 
+                               title="Xóa"
+                               th:data-message="'Bạn có chắc chắn muốn xóa video ' + ${video.title} + '?'">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div th:if="${totalPages != null and totalPages > 1}" class="pagination-container">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/videos(page=${currentPage - 1}, search=${search})}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/videos(page=${i}, search=${search})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/videos(page=${currentPage + 1}, search=${search})}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <style>
+        .alert { border-radius: 12px; border: none; padding: 15px 20px; margin-bottom: 20px; }
+        .alert-success { background: rgba(56, 239, 125, 0.1); color: #38ef7d; border: 1px solid rgba(56, 239, 125, 0.2); }
+        .alert-danger { background: rgba(245, 87, 108, 0.1); color: #f5576c; border: 1px solid rgba(245, 87, 108, 0.2); }
+        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 20px; flex-wrap: wrap; }
+        .search-form { flex: 1; max-width: 600px; }
+        .search-input-group { display: flex; align-items: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 8px 12px; gap: 10px; }
+        .search-icon { color: #8b9bb4; font-size: 1rem; }
+        .search-input { flex: 1; background: transparent; border: none; color: #e2e8f0; padding: 8px; outline: none; }
+        .search-input::placeholder { color: #8b9bb4; }
+        .btn-search, .btn-reset { background: rgba(255, 87, 34, 0.1); border: 1px solid rgba(255, 87, 34, 0.3); color: #ff8a50; padding: 8px 20px; border-radius: 8px; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-reset { padding: 8px 12px; }
+        .btn-search:hover, .btn-reset:hover { background: rgba(255, 87, 34, 0.2); border-color: #ff5722; }
+        .btn-add { background: linear-gradient(135deg, #ff5722, #ff8a50); color: #fff; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 600; transition: all 0.3s; box-shadow: 0 4px 15px rgba(255, 87, 34, 0.3); }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 87, 34, 0.4); color: #fff; }
+        .table-container { background: rgba(255, 255, 255, 0.02); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .modern-table { width: 100%; border-collapse: collapse; }
+        .modern-table thead { background: rgba(255, 255, 255, 0.03); }
+        .modern-table th { padding: 18px 15px; text-align: left; font-weight: 600; color: #fff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .modern-table td { padding: 15px; color: #e2e8f0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .modern-table tbody tr { transition: all 0.3s; }
+        .modern-table tbody tr:hover { background: rgba(255, 87, 34, 0.05); }
+        .id-badge { background: rgba(102, 126, 234, 0.2); color: #667eea; padding: 6px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; }
+        .video-title { font-weight: 600; color: #fff; }
+        .views-badge { background: rgba(255, 193, 7, 0.2); color: #ffc107; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; }
+        .description-text { color: #8b9bb4; font-size: 0.9rem; }
+        .category-badge { background: rgba(245, 87, 108, 0.2); color: #f5576c; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
+        .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; }
+        .badge-active { background: rgba(56, 239, 125, 0.2); color: #38ef7d; }
+        .badge-inactive { background: rgba(245, 87, 108, 0.2); color: #f5576c; }
+        .video-poster { width: 80px; height: 60px; border-radius: 8px; object-fit: cover; border: 2px solid rgba(255, 87, 34, 0.3); }
+        .poster-placeholder { width: 80px; height: 60px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; color: #8b9bb4; }
+        .action-buttons { display: flex; gap: 8px; }
+        .btn-action { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; border: 1px solid transparent; }
+        .btn-edit { background: rgba(102, 126, 234, 0.1); color: #667eea; border-color: rgba(102, 126, 234, 0.2); }
+        .btn-edit:hover { background: rgba(102, 126, 234, 0.2); transform: translateY(-2px); }
+        .btn-delete { background: rgba(245, 87, 108, 0.1); color: #f5576c; border-color: rgba(245, 87, 108, 0.2); }
+        .btn-delete:hover { background: rgba(245, 87, 108, 0.2); transform: translateY(-2px); }
+        .pagination-container { margin-top: 25px; display: flex; justify-content: center; }
+        .pagination { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0; }
+        .page-item.disabled .page-link { opacity: 0.5; pointer-events: none; }
+        .page-link { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); color: #e2e8f0; padding: 10px 15px; border-radius: 8px; text-decoration: none; transition: all 0.3s; min-width: 40px; text-align: center; }
+        .page-link:hover { background: rgba(255, 87, 34, 0.1); border-color: rgba(255, 87, 34, 0.3); color: #ff8a50; }
+        .page-item.active .page-link { background: linear-gradient(135deg, #ff5722, #ff8a50); border-color: #ff5722; color: #fff; }
+    </style>
+</div>
+</body>
+</html>

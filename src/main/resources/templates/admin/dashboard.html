@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/admin}">
+<head>
+<title>Tổng Quan</title>
+<script
+	src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+	<h4 layout:fragment="page-title">Tổng Quan Hệ Thống</h4>
+	<div layout:fragment="content">
+		<!-- Stat Cards -->
+		<div class="row g-4 mb-4">
+			<div class="col-md-4">
+				<div class="stat-card stat-card-blue">
+					<div class="stat-icon">
+						<i class="fas fa-users"></i>
+					</div>
+					<div class="stat-info">
+						<h3 th:text="${totalUsers}">0</h3>
+						<p>Người Dùng</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="stat-card stat-card-pink">
+					<div class="stat-icon">
+						<i class="fas fa-folder"></i>
+					</div>
+					<div class="stat-info">
+						<h3 th:text="${totalCategories}">0</h3>
+						<p>Danh Mục</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="stat-card stat-card-orange">
+					<div class="stat-icon">
+						<i class="fas fa-video"></i>
+					</div>
+					<div class="stat-info">
+						<h3 th:text="${totalVideos}">0</h3>
+						<p>Video</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Charts Row -->
+		<div class="row g-4 mb-4">
+			<div class="col-md-8">
+				<div class="chart-card">
+					<h5 class="chart-title">
+						<i class="fas fa-chart-line me-2"></i>Thống Kê Truy Cập Theo Tháng
+					</h5>
+					<canvas id="visitChart"></canvas>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="chart-card">
+					<h5 class="chart-title">
+						<i class="fas fa-chart-pie me-2"></i>Phân Bổ Nội Dung
+					</h5>
+					<canvas id="contentChart"></canvas>
+				</div>
+			</div>
+		</div>
+
+		<!-- Activity Row -->
+		<div class="row g-4">
+			<div class="col-md-6">
+				<div class="activity-card">
+					<h5 class="activity-title">
+						<i class="fas fa-clock me-2"></i>Hoạt Động Gần Đây
+					</h5>
+					<div class="activity-list">
+						<div class="activity-item">
+							<div class="activity-icon bg-primary">
+								<i class="fas fa-user-plus"></i>
+							</div>
+							<div class="activity-content">
+								<p class="activity-text">Người dùng mới đăng ký</p>
+								<span class="activity-time">5 phút trước</span>
+							</div>
+						</div>
+						<div class="activity-item">
+							<div class="activity-icon bg-success">
+								<i class="fas fa-video"></i>
+							</div>
+							<div class="activity-content">
+								<p class="activity-text">Video mới được thêm</p>
+								<span class="activity-time">15 phút trước</span>
+							</div>
+						</div>
+						<div class="activity-item">
+							<div class="activity-icon bg-warning">
+								<i class="fas fa-edit"></i>
+							</div>
+							<div class="activity-content">
+								<p class="activity-text">Danh mục được cập nhật</p>
+								<span class="activity-time">1 giờ trước</span>
+							</div>
+						</div>
+						<div class="activity-item">
+							<div class="activity-icon bg-info">
+								<i class="fas fa-star"></i>
+							</div>
+							<div class="activity-content">
+								<p class="activity-text">Video được đánh giá cao</p>
+								<span class="activity-time">2 giờ trước</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<div class="quick-actions-card">
+					<h5 class="activity-title">
+						<i class="fas fa-bolt me-2"></i>Thao Tác Nhanh
+					</h5>
+					<div class="quick-actions">
+						<a th:href="@{/admin/users/add}" class="quick-action-btn"> <i
+							class="fas fa-user-plus"></i> <span>Thêm User</span>
+						</a> <a th:href="@{/admin/categories/add}" class="quick-action-btn">
+							<i class="fas fa-folder-plus"></i> <span>Thêm Category</span>
+						</a> <a th:href="@{/admin/videos/add}" class="quick-action-btn"> <i
+							class="fas fa-video"></i> <span>Thêm Video</span>
+						</a> <a th:href="@{/}" class="quick-action-btn"> <i
+							class="fas fa-home"></i> <span>Xem Trang Chủ</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<style>
+.stat-card {
+	border-radius: 20px;
+	padding: 30px;
+	display: flex;
+	align-items: center;
+	gap: 25px;
+	border: none;
+	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	position: relative;
+	overflow: hidden;
+}
+
+.stat-card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+	opacity: 0.1;
+	transition: all 0.4s;
+}
+
+.stat-card:hover {
+	transform: translateY(-8px) scale(1.02);
+}
+
+.stat-card-blue {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+}
+
+.stat-card-blue::before {
+	background: #fff;
+	right: -50px;
+	top: -50px;
+}
+
+.stat-card-blue:hover {
+	box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
+}
+
+.stat-card-pink {
+	background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+	box-shadow: 0 10px 40px rgba(245, 87, 108, 0.4);
+}
+
+.stat-card-pink::before {
+	background: #fff;
+	right: -50px;
+	top: -50px;
+}
+
+.stat-card-pink:hover {
+	box-shadow: 0 15px 50px rgba(245, 87, 108, 0.6);
+}
+
+.stat-card-orange {
+	background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+	box-shadow: 0 10px 40px rgba(255, 138, 80, 0.4);
+}
+
+.stat-card-orange::before {
+	background: #fff;
+	right: -50px;
+	top: -50px;
+}
+
+.stat-card-orange:hover {
+	box-shadow: 0 15px 50px rgba(255, 138, 80, 0.6);
+}
+
+.stat-icon {
+	width: 80px;
+	height: 80px;
+	border-radius: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 2.2rem;
+	color: #fff;
+	background: rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+	z-index: 1;
+}
+
+.stat-info {
+	z-index: 1;
+}
+
+.stat-info h3 {
+	font-size: 3rem;
+	font-weight: 800;
+	color: #fff;
+	margin: 0;
+	line-height: 1;
+	text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.stat-info p {
+	color: rgba(255, 255, 255, 0.9);
+	margin: 8px 0 0 0;
+	font-size: 1rem;
+	font-weight: 600;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.chart-card, .activity-card, .quick-actions-card {
+	background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+	border-radius: 20px;
+	padding: 30px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	height: 100%;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.chart-title, .activity-title {
+	color: #fff;
+	font-size: 1.2rem;
+	font-weight: 700;
+	margin-bottom: 25px;
+	padding-bottom: 15px;
+	border-bottom: 2px solid rgba(255, 87, 34, 0.3);
+}
+
+.activity-list {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.activity-item {
+	display: flex;
+	align-items: center;
+	gap: 18px;
+	padding: 18px;
+	background: rgba(255, 255, 255, 0.04);
+	border-radius: 15px;
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.activity-item:hover {
+	background: rgba(255, 87, 34, 0.1);
+	border-color: rgba(255, 87, 34, 0.4);
+	transform: translateX(8px);
+}
+
+.activity-icon {
+	width: 50px;
+	height: 50px;
+	border-radius: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.3rem;
+	color: #fff;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.activity-icon.bg-primary {
+	background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.activity-icon.bg-success {
+	background: linear-gradient(135deg, #11998e, #38ef7d);
+}
+
+.activity-icon.bg-warning {
+	background: linear-gradient(135deg, #fa709a, #fee140);
+}
+
+.activity-icon.bg-info {
+	background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.activity-content {
+	flex: 1;
+}
+
+.activity-text {
+	color: #e2e8f0;
+	margin: 0 0 5px 0;
+	font-weight: 500;
+}
+
+.activity-time {
+	color: #8b9bb4;
+	font-size: 0.85rem;
+}
+
+.quick-actions {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 15px;
+}
+
+.quick-action-btn {
+	background: rgba(255, 255, 255, 0.05);
+	border: 2px solid rgba(255, 255, 255, 0.1);
+	border-radius: 15px;
+	padding: 25px 20px;
+	text-align: center;
+	text-decoration: none;
+	color: #e2e8f0;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+}
+
+.quick-action-btn:hover {
+	background: linear-gradient(135deg, #ff5722, #ff8a50);
+	border-color: transparent;
+	color: #fff;
+	transform: translateY(-5px);
+	box-shadow: 0 10px 30px rgba(255, 87, 34, 0.4);
+}
+
+.quick-action-btn i {
+	font-size: 2rem;
+}
+
+.quick-action-btn span {
+	font-size: 0.95rem;
+	font-weight: 600;
+}
+</style>
+
+		<!-- Dashboard Script -->
+		<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    /* ============================
+       1. Lượt truy cập theo tháng
+       ============================ */
+    const visitCtx = document.getElementById('visitChart');
+    if (visitCtx) {
+        new Chart(visitCtx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: [
+                    'T1', 'T2', 'T3', 'T4', 'T5', 'T6',
+                    'T7', 'T8', 'T9', 'T10', 'T11', 'T12'
+                ],
+                datasets: [{
+                    label: 'Lượt truy cập',
+                    data: [1200, 1900, 1500, 2100, 2400, 2200, 2800, 3100, 2900, 3400, 3800, 4200],
+                    borderColor: '#ff5722',
+                    backgroundColor: 'rgba(255, 87, 34, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#333',
+                            font: { size: 14 }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Tháng',
+                            color: '#555',
+                            font: { size: 16 }
+                        },
+                        ticks: {
+                            color: '#444',
+                            font: { size: 12 }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Lượt truy cập',
+                            color: '#555',
+                            font: { size: 16 }
+                        },
+                        ticks: {
+                            color: '#444',
+                            font: { size: 12 }
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    /* ============================
+       2. Thống kê nội dung (Pie chart)
+       ============================ */
+    const contentCtx = document.getElementById('contentChart');
+    if (contentCtx) {
+        new Chart(contentCtx.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Người Dùng', 'Danh Mục', 'Video'],
+                datasets: [{
+                    data: [
+                        /*[[${totalUsers}]]*/ 0,
+                        /*[[${totalCategories}]]*/ 0,
+                        /*[[${totalVideos}]]*/ 0
+                    ],
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(245, 87, 108, 0.8)',
+                        'rgba(255, 138, 80, 0.8)'
+                    ],
+                    borderColor: ['#667eea', '#f5576c', '#ff8a50'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#333',
+                            font: { size: 14 }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+});
+</script>
+	</div>
+</body>
+</html>

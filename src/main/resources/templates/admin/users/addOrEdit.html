@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/admin}">
+<head><title th:text="${user.isEdit != null and user.isEdit} ? 'Sửa Người Dùng' : 'Thêm Người Dùng'">Form Người Dùng</title></head>
+<body>
+<h4 layout:fragment="page-title" th:text="${user.isEdit != null and user.isEdit} ? 'Sửa Người Dùng' : 'Thêm Người Dùng'">Form</h4>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+            <div class="form-card">
+                <div class="form-header">
+                    <i class="fas fa-user me-2"></i>
+                    <h2 th:text="${user.isEdit != null and user.isEdit} ? 'Chỉnh Sửa Người Dùng' : 'Thêm Người Dùng Mới'">Form Người Dùng</h2>
+                </div>
+                <div class="form-body">
+                    <form th:action="@{/admin/users/saveOrUpdate}" method="POST" th:object="${user}" enctype="multipart/form-data">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="username" class="form-label">
+                                        <i class="fas fa-user-circle me-2"></i>Tên Đăng Nhập <span class="required">*</span>
+                                    </label>
+                                    <input type="text" th:field="*{username}" id="username" 
+                                           class="form-input" placeholder="Nhập tên đăng nhập" 
+                                           th:readonly="${user.isEdit != null and user.isEdit}" required />
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="password" class="form-label">
+                                        <i class="fas fa-lock me-2"></i>Mật Khẩu <span th:if="${user.isEdit == null or !user.isEdit}" class="required">*</span>
+                                    </label>
+                                    <input type="password" th:field="*{password}" id="password" 
+                                           class="form-input" 
+                                           th:placeholder="${user.isEdit != null and user.isEdit} ? 'Để trống nếu không đổi' : 'Nhập mật khẩu'" 
+                                           th:required="${user.isEdit == null or !user.isEdit}" />
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="fullname" class="form-label">
+                                        <i class="fas fa-id-card me-2"></i>Họ và Tên <span class="required">*</span>
+                                    </label>
+                                    <input type="text" th:field="*{fullname}" id="fullname" 
+                                           class="form-input" placeholder="Nhập họ và tên đầy đủ" required />
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope me-2"></i>Email <span class="required">*</span>
+                                    </label>
+                                    <input type="email" th:field="*{email}" id="email" 
+                                           class="form-input" placeholder="example@email.com" required />
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="phone" class="form-label">
+                                        <i class="fas fa-phone me-2"></i>Số Điện Thoại
+                                    </label>
+                                    <input type="text" th:field="*{phone}" id="phone" 
+                                           class="form-input" placeholder="0123456789" />
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="images" class="form-label">
+                                        <i class="fas fa-link me-2"></i>URL Ảnh Đại Diện
+                                    </label>
+                                    <input type="text" th:field="*{images}" id="images" 
+                                           class="form-input" placeholder="Nhập URL ảnh hoặc tải lên bên dưới" />
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="avatarFile" class="form-label">
+                                        <i class="fas fa-upload me-2"></i>Tải Lên Ảnh Đại Diện
+                                    </label>
+                                    <div class="file-upload-wrapper">
+                                        <input type="file" name="avatarFile" id="avatarFile" class="file-input" accept="image/*" />
+                                        <label for="avatarFile" class="file-label">
+                                            <i class="fas fa-cloud-upload-alt me-2"></i>
+                                            <span>Chọn file hoặc kéo thả vào đây</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="checkbox-card">
+                                        <input type="checkbox" th:field="*{admin}" id="admin" class="checkbox-input" />
+                                        <label for="admin" class="checkbox-label">
+                                            <i class="fas fa-crown me-2"></i>Quản Trị Viên
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="checkbox-card">
+                                        <input type="checkbox" th:field="*{active}" id="active" class="checkbox-input" />
+                                        <label for="active" class="checkbox-label">
+                                            <i class="fas fa-check-circle me-2"></i>Kích Hoạt
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <input type="hidden" th:field="*{isEdit}" />
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-save me-2"></i>
+                                <span th:text="${user.isEdit != null and user.isEdit} ? 'Cập Nhật' : 'Lưu Lại'">Lưu</span>
+                            </button>
+                            <a th:href="@{/admin/users}" class="btn-cancel">
+                                <i class="fas fa-times me-2"></i>Hủy Bỏ
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .form-card { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .form-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px 30px; display: flex; align-items: center; color: #fff; }
+        .form-header h2 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+        .form-body { padding: 35px; }
+        .form-group { margin-bottom: 0; }
+        .form-label { display: block; color: #e2e8f0; font-weight: 600; margin-bottom: 10px; font-size: 0.95rem; }
+        .required { color: #f5576c; }
+        .form-input { width: 100%; padding: 14px 18px; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #e2e8f0; font-size: 0.95rem; transition: all 0.3s; }
+        .form-input:focus { outline: none; border-color: #667eea; background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1); }
+        .form-input::placeholder { color: #64748b; }
+        .form-input:read-only { background: rgba(255, 255, 255, 0.02); cursor: not-allowed; }
+        .file-upload-wrapper { position: relative; }
+        .file-input { position: absolute; opacity: 0; width: 0; height: 0; }
+        .file-label { display: flex; align-items: center; justify-content: center; padding: 30px; background: rgba(255, 255, 255, 0.03); border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: 12px; color: #8b9bb4; cursor: pointer; transition: all 0.3s; margin: 0; }
+        .file-label:hover { background: rgba(102, 126, 234, 0.1); border-color: #667eea; color: #667eea; }
+        .checkbox-card { background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px 18px; transition: all 0.3s; cursor: pointer; }
+        .checkbox-card:has(.checkbox-input:checked) { background: rgba(102, 126, 234, 0.1); border-color: #667eea; }
+        .checkbox-input { display: none; }
+        .checkbox-label { color: #e2e8f0; font-weight: 600; cursor: pointer; margin: 0; display: flex; align-items: center; }
+        .form-actions { display: flex; gap: 15px; margin-top: 35px; padding-top: 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .btn-submit { flex: 1; padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
+        .btn-cancel { padding: 15px 30px; background: rgba(255, 255, 255, 0.05); color: #8b9bb4; border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 12px; font-weight: 600; font-size: 1rem; text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; }
+        .btn-cancel:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); color: #e2e8f0; }
+    </style>
+</div>
+</body>
+</html>

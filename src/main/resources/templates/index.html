@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trang Chủ - Đặc Sản Việt</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+body {
+	background-color: #080b12;
+	color: #fff;
+	font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	overflow-x: hidden;
+}
+
+.navbar-custom {
+	background: rgba(17, 22, 33, 0.95);
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	padding: 15px 0;
+}
+
+.navbar-brand {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-weight: 700;
+	font-size: 1.3rem;
+	color: #fff !important;
+}
+
+.navbar-brand img {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    object-fit: cover;    
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.navbar-brand:hover img {
+    transform: scale(1.12) rotate(3deg);
+    box-shadow: 0 4px 15px rgba(255,87,34,0.35);
+}
+
+.btn-login, .btn-register {
+	border-radius: 50px;
+	padding: 8px 24px;
+	font-weight: 600;
+	transition: all 0.3s;
+}
+
+.btn-login {
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	color: #fff;
+}
+
+.btn-login:hover {
+	border-color: #ff5722;
+	color: #ff5722;
+	background: rgba(255, 87, 34, 0.1);
+}
+
+.btn-register {
+	background: linear-gradient(45deg, #ff5722, #ff8a50);
+	border: none;
+	color: #fff;
+	margin-left: 10px;
+}
+
+.btn-register:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 5px 15px rgba(255, 87, 34, 0.4);
+	color: #fff;
+}
+
+.hero-section {
+	background-image:
+		radial-gradient(circle at 90% 10%, rgba(255, 180, 0, 0.15) 0%, transparent 50%),
+		radial-gradient(circle at 10% 10%, rgba(255, 50, 50, 0.2) 0%, transparent 50%),
+		radial-gradient(circle at center, #3d1010 0%, #0a0202 100%);
+	background-repeat: no-repeat;
+	background-size: cover;
+	min-height: 100vh;
+	border-radius: 24px;
+	margin-top: 30px;
+	margin-bottom: 40px;
+	position: relative;
+	overflow: hidden;
+	padding: 80px 60px;
+	display: flex;
+	align-items: center;
+	min-height: 500px;
+	box-shadow: 0 20px 60px rgba(234, 60, 18, 0.15);
+}
+
+.hero-content {
+	z-index: 2;
+	position: relative;
+	max-width: 550px;
+}
+
+.hero-title {
+	font-size: 5rem;
+	font-weight: 800;
+	line-height: 1.1;
+	color: #fff;
+	margin-bottom: 24px;
+	text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.hero-subtitle {
+	font-size: 1.15rem;
+	color: rgba(255, 255, 255, 0.95);
+	margin-bottom: 40px;
+	font-weight: 400;
+	line-height: 1.6;
+	max-width: 480px;
+}
+
+.btn-hero {
+	background-color: #ff5722;
+	background-image: linear-gradient(45deg, #ff5722, #ff8a50);
+	color: #fff;
+	font-weight: 600;
+	padding: 14px 40px;
+	border-radius: 50px;
+	border: none;
+	font-size: 1rem;
+	transition: all 0.3s ease;
+	box-shadow: 0 10px 25px rgba(255, 87, 34, 0.4);
+	text-decoration: none;
+	display: inline-block;
+}
+
+.btn-hero:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 15px 35px rgba(255, 87, 34, 0.6);
+	color: #fff;
+	filter: brightness(1.1);
+}
+
+.hero-image-container {
+	position: absolute;
+	right: 50px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 480px;
+	max-width: 45%;
+	z-index: 1;
+	transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hero-image-container img {
+	width: 100%;
+	height: auto;
+	object-fit: contain;
+	filter: drop-shadow(10px 20px 30px rgba(0, 0, 0, 0.6));
+}
+
+.hero-section:hover .hero-image-container {
+	transform: translateY(-52%) scale(1.02);
+}
+
+.feature-card {
+	position: relative;
+	background: #111621;
+	border-radius: 20px;
+	padding: 35px 25px;
+	text-align: center;
+	height: 100%;
+	overflow: hidden;
+	z-index: 1;
+	transition: transform 0.3s ease;
+	border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.feature-card::after {
+	content: '';
+	position: absolute;
+	inset: 2px;
+	background: #111621;
+	border-radius: 18px;
+	z-index: -1;
+}
+
+.feature-card::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 200%;
+	height: 200%;
+	background: conic-gradient(
+		from 0deg, 
+		transparent 0%, 
+		transparent 70%, 
+		#ff9800 80%, 
+		#ff5722 90%, 
+		#ffffff 100%
+	);
+	transform: translate(-50%, -50%) rotate(0deg);
+	z-index: -2;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.feature-card:hover {
+	transform: translateY(-8px);
+	box-shadow: 0 10px 40px rgba(255, 87, 34, 0.2);
+	border-color: transparent;
+}
+
+.feature-card:hover::before {
+	opacity: 1;
+	animation: rotateBorder 3s linear infinite;
+}
+
+@keyframes rotateBorder {
+	from { transform: translate(-50%, -50%) rotate(0deg); }
+	to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.icon-wrapper, .card-title, .card-desc {
+	position: relative;
+	z-index: 2;
+}
+
+.icon-wrapper {
+	margin-bottom: 15px;
+	font-size: 2.5rem;
+	display: inline-block;
+	transition: transform 0.3s;
+}
+
+.feature-card:hover .icon-wrapper {
+	transform: scale(1.1);
+}
+
+.navbar-brand span {
+    background: linear-gradient(90deg, #ff8a50, #ff5722);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    letter-spacing: 1px;
+    transition: opacity .3s ease, transform .3s ease;
+}
+
+.navbar-brand:hover span {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
+.hero-title {
+    font-size: 5rem;
+    font-weight: 900;
+    line-height: 1.05;
+    background: linear-gradient(90deg, #ff8a50, #ff5722, #ffd29b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0px 0px 20px rgba(255, 87, 34, 0.45);
+    transition: transform .35s ease, text-shadow .35s ease;
+}
+
+.hero-title:hover {
+    transform: scale(1.04);
+    text-shadow: 0px 0px 35px rgba(255,87,34,0.8);
+}
+
+
+.icon-orange {
+	background: linear-gradient(to bottom right, #ff9800, #ff5722);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(0 2px 5px rgba(255, 87, 34, 0.3));
+}
+
+.card-title {
+	font-size: 1.2rem;
+	font-weight: 700;
+	color: #fff;
+	margin-bottom: 8px;
+}
+
+.card-desc {
+	color: #8b9bb4;
+	font-size: 0.9rem;
+	line-height: 1.5;
+}
+
+footer {
+	background: #111621;
+	padding: 30px 0;
+	margin-top: 60px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	text-align: center;
+	color: #8b9bb4;
+}
+
+@media (max-width: 991px) {
+	.hero-section {
+		flex-direction: column;
+		text-align: center;
+		padding: 50px 20px;
+	}
+	.hero-content {
+		margin-bottom: 40px;
+	}
+	.hero-image-container {
+		position: relative;
+		right: auto;
+		top: auto;
+		transform: none !important;
+		width: 70%;
+		max-width: 350px;
+	}
+	.hero-title {
+		font-size: 3rem;
+	}
+	
+	footer p {
+    font-size: 0.95rem;
+    margin: 3px 0;
+    opacity: .85;
+    transition: opacity .3s ease;
+}
+
+footer:hover p {
+    opacity: 1;
+}
+	
+}
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-custom">
+		<div class="container">
+			<a class="navbar-brand" href="/">
+				<img src="https://files.catbox.moe/c373f9.webp" alt="Logo">
+				<span>ĐẶC SẢN VIỆT</span>
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item" sec:authorize="!isAuthenticated()">
+						<a class="btn btn-login" th:href="@{/login}">Đăng Nhập</a>
+					</li>
+					<li class="nav-item" sec:authorize="!isAuthenticated()">
+						<a class="btn btn-register" th:href="@{/register}">Đăng Ký</a>
+					</li>
+					<li class="nav-item" sec:authorize="isAuthenticated()">
+					<img src="/images/profile.webp" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+						<a class="btn btn-register" th:href="@{/admin/dashboard}">
+							<i class="fas fa-tachometer-alt me-2"></i>Dashboard
+						</a>
+						
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<div class="hero-section">
+			<div class="hero-content">
+				<h1 class="hero-title">ĐẶC SẢN VIỆT</h1>
+				<p class="hero-subtitle">
+					Khám phá hương vị Việt – kết nối văn hoá & ẩm thực ba miền.
+					Tinh hoa hội tụ trong từng món ăn.
+				</p>
+				<a th:href="@{/admin/dashboard}" class="btn-hero" sec:authorize="hasRole('ADMIN')">
+					Vào Trang Admin
+				</a>
+				<a th:href="@{/login}" class="btn-hero" sec:authorize="!isAuthenticated()">
+					Đăng Nhập Ngay
+				</a>
+			</div>
+
+			<div class="hero-image-container">
+				<img src="https://files.catbox.moe/e88ufq.webp" alt="Vietnamese Food">
+			</div>
+		</div>
+
+		<div class="row g-4 mb-5">
+			<div class="col-md-4">
+				<a th:href="@{/admin/users}" class="text-decoration-none">
+					<div class="feature-card">
+						<div class="icon-wrapper">
+							<i class="fa-solid fa-users icon-orange"></i>
+						</div>
+						<h4 class="card-title">Quản Lý Người Dùng</h4>
+						<p class="card-desc">
+							Hệ thống phân quyền & quản lý <br> tài khoản thành viên
+						</p>
+					</div>
+				</a>
+			</div>
+
+			<div class="col-md-4">
+				<a th:href="@{/admin/categories}" class="text-decoration-none">
+					<div class="feature-card">
+						<div class="icon-wrapper">
+							<i class="fa-solid fa-utensils icon-orange"></i>
+						</div>
+						<h4 class="card-title">Danh Mục Món Ăn</h4>
+						<p class="card-desc">
+							Thư viện ẩm thực phong phú <br> theo vùng miền Việt Nam
+						</p>
+					</div>
+				</a>
+			</div>
+
+			<div class="col-md-4">
+				<a th:href="@{/admin/videos}" class="text-decoration-none">
+					<div class="feature-card">
+						<div class="icon-wrapper">
+							<i class="fa-solid fa-play icon-orange"></i>
+						</div>
+						<h4 class="card-title">Video Hướng Dẫn</h4>
+						<p class="card-desc">
+							Trải nghiệm nấu ăn trực quan <br> qua video chất lượng cao
+						</p>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<footer>
+		<div class="container">
+			<p style="margin: 0;">Họ và tên: Nguyễn Nhật Thiên</p>
+			<p style="margin: 0;">MSSV: 23110153</p>
+		</div>
+	</footer>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
