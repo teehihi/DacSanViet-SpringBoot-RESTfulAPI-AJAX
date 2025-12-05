@@ -246,6 +246,7 @@ footer {
 			<li><a th:href="@{/admin/categories}"><i
 					class="fas fa-folder"></i><span>Danh Mục</span></a></li>
 			<li><a th:href="@{/admin/videos}"><i class="fas fa-video"></i><span>Video</span></a></li>
+			<li><a th:href="@{/admin/videos-ajax}"><i class="fas fa-bolt"></i><span>Video (AJAX)</span></a></li>
 			<li
 				style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);"><a
 				th:href="@{/}"><i class="fas fa-home"></i><span>Trang Chủ</span></a></li>
@@ -468,5 +469,10 @@ to {
 
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- Page-specific scripts -->
+	<th:block layout:fragment="scripts">
+		<!-- Scripts from child pages will be inserted here -->
+	</th:block>
 </body>
 </html>

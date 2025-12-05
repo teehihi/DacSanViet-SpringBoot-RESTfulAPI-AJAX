@@ -158,6 +158,14 @@ VALUES (
 - ✅ Hoạt động gần đây
 - ✅ Thao tác nhanh
 
+### ⚡ AJAX Features
+- ✅ Quản lý Video với AJAX (không reload trang)
+- ✅ Tìm kiếm real-time
+- ✅ Phân trang động
+- ✅ CRUD không reload trang
+- ✅ Upload ảnh với preview
+- ✅ Loading spinner
+
 ---
 
 ## 🌐 Các trang chính
@@ -170,7 +178,8 @@ VALUES (
 | Dashboard | `/admin/dashboard` | Tổng quan hệ thống |
 | Quản lý Users | `/admin/users` | CRUD người dùng |
 | Quản lý Categories | `/admin/categories` | CRUD danh mục |
-| Quản lý Videos | `/admin/videos` | CRUD video |
+| Quản lý Videos | `/admin/videos` | CRUD video (Thymeleaf) |
+| Quản lý Videos AJAX | `/admin/videos-ajax` | CRUD video (AJAX) |
 
 ---
 
@@ -254,6 +263,69 @@ Kiểm tra:
 - User có active = 1 không?
 - Có lỗi trong console không?
 ```
+
+---
+
+## ⚡ AJAX Video Management
+
+Hệ thống cung cấp trang quản lý Video sử dụng **AJAX** để thực hiện CRUD không reload trang.
+
+### 🎯 Truy cập
+
+```
+http://localhost:8088/admin/videos-ajax
+```
+
+### ✨ Tính năng AJAX
+
+1. **Hiển thị danh sách video:**
+   - Load dữ liệu từ API bằng AJAX
+   - Hiển thị dạng grid với card đẹp
+   - Không reload trang
+
+2. **Tìm kiếm real-time:**
+   - Gõ từ khóa → Tự động tìm kiếm
+   - Debounce 500ms để tối ưu
+   - Kết quả hiển thị ngay lập tức
+
+3. **Phân trang động:**
+   - Chuyển trang không reload
+   - Hiển thị số trang, tổng số video
+   - Có nút Previous/Next
+
+4. **Thêm video mới:**
+   - Modal form với Bootstrap
+   - Upload ảnh với preview
+   - Gửi FormData qua AJAX
+   - Thông báo thành công/lỗi
+
+5. **Sửa video:**
+   - Load dữ liệu video qua AJAX
+   - Hiển thị ảnh hiện tại
+   - Cập nhật không reload trang
+
+6. **Xóa video:**
+   - Confirm trước khi xóa
+   - Xóa qua AJAX
+   - Cập nhật danh sách ngay lập tức
+
+### 🔧 Cách hoạt động
+
+**Backend (REST API):**
+- GET `/api/video` - Lấy danh sách
+- POST `/api/video/addVideo` - Thêm mới
+- PUT `/api/video/updateVideo` - Cập nhật
+- DELETE `/api/video/deleteVideo` - Xóa
+
+### 📊 So sánh Thymeleaf vs AJAX
+
+| Tính năng | Thymeleaf | AJAX |
+|-----------|-----------|------|
+| Reload trang | ✅ Có | ❌ Không |
+| Tốc độ | Chậm hơn | Nhanh hơn |
+| UX | Bình thường | Mượt mà |
+| SEO | Tốt | Kém hơn |
+| Phức tạp | Đơn giản | Phức tạp hơn |
 
 ---
 
@@ -569,8 +641,9 @@ curl -X DELETE http://localhost:8088/api/video/deleteVideo \
 
 - [x] RESTful API cho Video CRUD
 - [x] Swagger 3 documentation
+- [x] AJAX Video Management (CRUD không reload trang)
+- [x] Tìm kiếm và phân trang với AJAX
 - [ ] Thêm API cho Category và User
-- [ ] Thêm chức năng tìm kiếm nâng cao
 - [ ] Export dữ liệu ra Excel/PDF
 - [ ] Thêm email notification
 - [ ] Tích hợp payment gateway
