@@ -17,28 +17,34 @@ Dự án cung cấp các chức năng:
 ## 📂 Cấu trúc thư mục
 
 ```plaintext
-src/main/java/LapTrinhWeb/SpringBoot/
-├── config/              # Cấu hình Spring Security, Password Encoder, Web Config
-├── controller/          # Controllers xử lý request
-├── entity/             # Entity classes (User, Category, Video)
-├── model/              # Model classes (DTO)
-├── repository/         # JPA Repositories
-├── service/            # Business logic services
-└── SpringBootWithThymeLeafApplication.java
-
-src/main/resources/
-├── static/
-│   ├── css/           # CSS files
-│   ├── images/        # Static images
-│   └── js/            # JavaScript files
-├── templates/
-│   ├── admin/         # Admin pages (dashboard, users, categories, videos)
-│   ├── auth/          # Authentication pages (login, register)
-│   ├── layouts/       # Layout templates
-│   └── index.html     # Home page
-└── application.properties
-
-uploads/                # Uploaded images (auto-created)
+SpringBootWithThymeLeaf/
+├── src/main/java/LapTrinhWeb/SpringBoot/
+│   ├── config/              # Cấu hình Spring Security, Password Encoder, Web Config
+│   ├── controller/          # Controllers xử lý request
+│   │   └── api/            # RESTful API Controllers
+│   ├── entity/             # Entity classes (User, Category, Video)
+│   ├── model/              # Model classes (DTO, Response)
+│   ├── repository/         # JPA Repositories
+│   ├── service/            # Business logic services
+│   └── SpringBootWithThymeLeafApplication.java
+│
+├── src/main/resources/
+│   ├── static/
+│   │   ├── css/           # CSS files
+│   │   ├── images/        # Static images
+│   │   └── js/            # JavaScript files
+│   ├── templates/
+│   │   ├── admin/         # Admin pages (dashboard, users, categories, videos)
+│   │   ├── auth/          # Authentication pages (login, register)
+│   │   ├── layouts/       # Layout templates
+│   │   └── index.html     # Home page
+│   └── application.properties
+│
+├── screenshots/            # Project screenshots for documentation
+├── uploads/                # Uploaded images (auto-created, gitignored)
+├── pom.xml                 # Maven dependencies
+├── README.md               # Project documentation
+└── PROJECT_SUMMARY.md      # Project summary
 ```
 
 ---
@@ -183,16 +189,16 @@ VALUES (
 ## 📸 Screenshots
 
 ### Trang chủ
-![Trang Chủ](image-4.png)
+![Trang Chủ](screenshots/image-4.png)
 
 ### Admin Dashboard
-![Admin Dashboard](image-2.png)
-![Admin Dashboard 2](image-3.png)
+![Admin Dashboard](screenshots/image-2.png)
+![Admin Dashboard 2](screenshots/image-3.png)
 
 *Dashboard với thống kê real-time và biểu đồ*
 
 ### Quản lý Users
-![Quản lý User](image-5.png)
+![Quản lý User](screenshots/image-5.png)
 
 *Giao diện quản lý người dùng với search và pagination*
 
@@ -251,14 +257,324 @@ Kiểm tra:
 
 ---
 
+## 🔌 RESTful API
+
+Hệ thống cung cấp RESTful API cho Video CRUD với Swagger 3 documentation.
+
+### 🎯 Truy cập API Documentation
+
+**Swagger UI (Khuyến nghị):**
+```
+http://localhost:8088/swagger-ui/index.html
+```
+
+![HomePage Swagger UI](screenshots/image.png)
+
+*SwaggerUI với giao diện cho phép test API một cách dễ dàng và trực quan*
+
+**OpenAPI JSON:**
+```
+http://localhost:8088/v3/api-docs
+```
+
+### 📋 API Endpoints
+
+#### 1. Lấy tất cả video (có phân trang và tìm kiếm)
+```http
+GET /api/video?title={title}&page={page}&size={size}&sort={sort}
+```
+
+**Parameters:**
+- `title` (optional): Tìm kiếm theo tiêu đề
+- `page` (optional, default: 0): Số trang
+- `size` (optional, default: 10): Số lượng mỗi trang
+- `sort` (optional, default: videold): Trường sắp xếp
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Lấy danh sách video thành công",
+  "body": {
+    "content": [...],
+    "totalElements": 100,
+    "totalPages": 10,
+    "size": 10,
+    "number": 0
+  }
+}
+```
+
+#### 2. Lấy thông tin video theo ID
+```http
+POST /api/video/getVideo
+Content-Type: multipart/form-data
+
+id=1
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Lấy thông tin video thành công",
+  "body": {
+    "videold": 1,
+    "title": "Video Title",
+    "description": "Description",
+    "poster": "filename.jpg",
+    "views": 100,
+    "active": true,
+    "category": {...}
+  }
+}
+```
+
+#### 3. Thêm video mới
+```http
+POST /api/video/addVideo
+Content-Type: multipart/form-data
+
+title=Video Title
+description=Video Description
+categoryId=1
+poster=@file.jpg
+active=true
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Thêm video thành công",
+  "body": {...}
+}
+```
+
+#### 4. Cập nhật video
+```http
+PUT /api/video/updateVideo
+Content-Type: multipart/form-data
+
+videold=1
+title=Updated Title
+description=Updated Description
+categoryId=1
+poster=@newfile.jpg
+active=true
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Cập nhật video thành công",
+  "body": {...}
+}
+```
+
+#### 5. Xóa video
+```http
+DELETE /api/video/deleteVideo
+Content-Type: multipart/form-data
+
+videold=1
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Xóa video thành công",
+  "body": {...}
+}
+```
+
+### 🧪 Test API với Swagger UI (Khuyến nghị)
+
+Swagger UI cung cấp giao diện đẹp và dễ sử dụng để test API.
+
+**Các bước test:**
+
+1. **Truy cập Swagger UI:**
+   ```
+   http://localhost:8088/swagger-ui/index.html
+   ```
+
+2. **Chọn endpoint muốn test** (ví dụ: `POST /api/video/addVideo`)
+
+3. **Click "Try it out"**
+
+4. **Điền thông tin:**
+   - `title`: Bánh mì Sài Gòn
+   - `description`: Món ăn đường phố nổi tiếng
+   - `categoryId`: 1
+   - `poster`: Click "Choose File" để chọn ảnh
+   - `active`: true
+
+5. **Click "Execute"**
+
+6. **Xem kết quả** trong phần Response:
+   - Status code: 200
+   - Response body: JSON với thông tin video vừa tạo
+   
+![Thêm Video thành công](screenshots/image-1.png)
+
+**Ưu điểm của Swagger UI:**
+- ✅ Giao diện đẹp, trực quan
+- ✅ Tự động generate documentation
+- ✅ Upload file dễ dàng
+- ✅ Xem response ngay lập tức
+- ✅ Không cần cấu hình gì thêm
+
+### 📮 Test API với Postman
+
+**Chuẩn bị:**
+
+1. **Xóa cookies cũ:**
+   - Click icon **Cookies** (hình bánh quy) bên dưới nút Send
+   - Tìm domain `localhost:8088`
+   - Click **Remove All**
+
+2. **Thêm header:**
+   - Key: `Accept`
+   - Value: `application/json`
+
+**Test các endpoint:**
+
+#### 1. GET - Lấy danh sách video
+```
+Method: GET
+URL: http://localhost:8088/api/video
+Params:
+  - title: (optional)
+  - page: 0
+  - size: 10
+  - sort: videold
+```
+
+#### 2. POST - Thêm video mới
+```
+Method: POST
+URL: http://localhost:8088/api/video/addVideo
+Body: form-data
+  - title: Bánh mì Sài Gòn
+  - description: Món ăn đường phố
+  - categoryId: 1
+  - poster: [Select File - chọn type "File"]
+  - active: true
+```
+
+**Lưu ý quan trọng:**
+- Chọn Body → **form-data** (không phải raw JSON)
+- Field `poster` phải chọn type **File** (không phải Text)
+- Tất cả fields phải tick checkbox
+
+#### 3. PUT - Cập nhật video
+```
+Method: PUT
+URL: http://localhost:8088/api/video/updateVideo
+Body: form-data
+  - videold: 1
+  - title: Bánh mì Sài Gòn - Updated
+  - description: Mô tả mới
+  - categoryId: 1
+  - poster: [Select File] (optional)
+  - active: true
+```
+
+#### 4. DELETE - Xóa video
+```
+Method: DELETE
+URL: http://localhost:8088/api/video/deleteVideo
+Body: form-data
+  - videold: 1
+```
+
+**Troubleshooting Postman:**
+
+❌ **Lỗi 401 Unauthorized:**
+- Xóa cookies: Cookies → Remove All
+- Kiểm tra URL đúng: `http://localhost:8088/api/...`
+
+❌ **Lỗi 302 Found (redirect):**
+- Restart Spring Boot application
+- Xóa cookies trong Postman
+- Thêm header `Accept: application/json`
+
+❌ **Response trả về HTML thay vì JSON:**
+- Đang bị redirect về trang login
+- Xóa cookies và restart application
+
+### 🔧 Test API với cURL
+
+```bash
+# GET - Lấy danh sách video
+curl http://localhost:8088/api/video
+
+# POST - Thêm video mới
+curl -X POST http://localhost:8088/api/video/addVideo \
+  -F "title=Bánh mì Sài Gòn" \
+  -F "description=Món ăn đường phố" \
+  -F "categoryId=1" \
+  -F "active=true" \
+  -F "poster=@/path/to/image.jpg"
+
+# PUT - Cập nhật video
+curl -X PUT http://localhost:8088/api/video/updateVideo \
+  -F "videold=1" \
+  -F "title=Bánh mì Sài Gòn - Updated" \
+  -F "description=Mô tả mới" \
+  -F "categoryId=1" \
+  -F "active=true"
+
+# DELETE - Xóa video
+curl -X DELETE http://localhost:8088/api/video/deleteVideo \
+  -F "videold=1"
+```
+
+### 📝 Lưu ý khi sử dụng API
+
+**Bảo mật:**
+- ✅ API không yêu cầu authentication (public API)
+- ✅ CSRF protection đã disable cho API
+- ✅ Session management: STATELESS (không tạo session)
+
+**Upload File:**
+- ✅ Hỗ trợ định dạng: JPG, PNG, GIF
+- ✅ Kích thước file tối đa: 10MB
+- ✅ File được lưu vào thư mục `uploads/`
+- ✅ Truy cập ảnh qua: `/uploads/{filename}`
+
+**Response Format:**
+- ✅ Tất cả response đều có format: `{status, message, body}`
+- ✅ `status: true` - Thành công
+- ✅ `status: false` - Thất bại
+- ✅ `message` - Mô tả kết quả
+- ✅ `body` - Dữ liệu trả về (hoặc null nếu lỗi)
+
+**Phân trang:**
+- ✅ GET /api/video hỗ trợ phân trang
+- ✅ Parameters: `page`, `size`, `sort`
+- ✅ Response có: `totalElements`, `totalPages`, `number`
+
+**Tìm kiếm:**
+- ✅ GET /api/video?title={keyword}
+- ✅ Tìm kiếm theo tiêu đề video
+- ✅ Kết hợp với phân trang
+
+---
+
 ## 📝 TODO
 
+- [x] RESTful API cho Video CRUD
+- [x] Swagger 3 documentation
+- [ ] Thêm API cho Category và User
 - [ ] Thêm chức năng tìm kiếm nâng cao
 - [ ] Export dữ liệu ra Excel/PDF
 - [ ] Thêm email notification
 - [ ] Tích hợp payment gateway
 - [ ] Mobile app với React Native
-- [ ] API documentation với Swagger
 
 ---
 
@@ -274,7 +590,7 @@ Kiểm tra:
 
 ## 📄 License
 
-Dự án này được phát triển cho mục đích học tập tại **Trường Đại học Công Nghệ Thông Tin - ĐHQG TP.HCM**.
+Dự án này được phát triển cho mục đích học tập tại **Trường Đại học Sư phạm Kỹ thuật TP.HCM**.
 
 ---
 

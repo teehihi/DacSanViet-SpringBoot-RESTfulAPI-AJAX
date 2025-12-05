@@ -3,6 +3,8 @@ package LapTrinhWeb.SpringBoot.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -24,6 +26,7 @@ public class User implements Serializable {
 	@Column(name = "username", columnDefinition = "NVARCHAR(50)")
 	private String username;
 
+	@JsonIgnore
 	@Column(name = "password", columnDefinition = "NVARCHAR(255)")
 	private String password;
 
@@ -45,6 +48,7 @@ public class User implements Serializable {
 	@Column(name = "images", columnDefinition = "NVARCHAR(MAX)")
 	private String images;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<Category> categories;
 }

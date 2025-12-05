@@ -10,6 +10,7 @@ import LapTrinhWeb.SpringBoot.entity.Video;
 
 public interface VideoService {
 	List<Video> findAll();
+	Page<Video> findAll(Pageable pageable);
 	Optional<Video> findById(Integer id);
 	Video save(Video video);
 	void deleteById(Integer id);

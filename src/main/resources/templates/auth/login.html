@@ -86,27 +86,36 @@
 		font-size: 0.9rem;
 	}
 
+	.input-group {
+		border: 1px solid #2d3748;
+		border-radius: 12px;
+		overflow: hidden;
+		transition: all 0.3s;
+	}
+
+	.input-group:focus-within {
+		border-color: #ff5722;
+		box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+	}
+
 	.input-group-text {
 		background: #1a202c;
-		border: 1px solid #2d3748;
-		border-right: none;
+		border: none;
 		color: #ff7043;
-		border-radius: 12px 0 0 12px;
+		padding: 12px 15px;
 	}
 
 	.form-control {
 		background: #1a202c;
-		border: 1px solid #2d3748;
-		border-left: none;
+		border: none;
 		color: #fff;
 		padding: 12px 15px;
-		border-radius: 0 12px 12px 0;
 	}
 
 	.form-control:focus {
 		background: #1a202c;
 		color: #fff;
-		border-color: #ff5722;
+		border: none;
 		box-shadow: none;
 	}
 

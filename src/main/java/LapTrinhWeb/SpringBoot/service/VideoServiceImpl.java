@@ -22,6 +22,11 @@ public class VideoServiceImpl implements VideoService {
 	}
 
 	@Override
+	public Page<Video> findAll(Pageable pageable) {
+		return videoRepository.findAll(pageable);
+	}
+
+	@Override
 	public Optional<Video> findById(Integer id) {
 		return videoRepository.findById(id);
 	}
